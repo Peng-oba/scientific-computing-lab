@@ -1,0 +1,10 @@
+--- a/src/material.cpp
++++ b/src/material.cpp
+@@ -9,6 +9,6 @@
+     if (!std::isfinite(modulus) || modulus <= 0.0 || !std::isfinite(strain)) {
+         throw std::invalid_argument("modulus must be finite and positive; strain must be finite");
+     }
+-    state.stress = modulus * strain;
++    state.stress += modulus * strain;
+ }
+ }  // namespace lab
