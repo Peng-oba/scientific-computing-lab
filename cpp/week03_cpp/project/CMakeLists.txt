@@ -28,10 +28,11 @@ add_executable(material_demo app/main.cpp)
 target_link_libraries(material_demo PRIVATE material)
 
 include(CTest)
+# 配置 Test 测试
 if(BUILD_TESTING)
     add_executable(material_tests tests/material_tests.cpp)
     target_link_libraries(material_tests PRIVATE material)
-    foreach(case_name IN ITEMS normal boundary invalid repeated)
+    foreach(case_name IN ITEMS normal boundary invalid repeated)    # 循环添加
         add_test(NAME material.${case_name} COMMAND material_tests ${case_name})
     endforeach()
     if(LAB_WITH_GTEST)
@@ -43,7 +44,7 @@ if(BUILD_TESTING)
     endif()
 endif()
 
-# Deliberately faulty programs: explicit build only, never registered with CTest.
+# 故意包含错误的示例程序: 仅在显式指定相应目标时构建, 不注册为 CTest 测试
 foreach(fault_name IN ITEMS uaf oob overflow)
     add_executable(fault_${fault_name} EXCLUDE_FROM_ALL faults/${fault_name}.cpp)
     target_link_libraries(fault_${fault_name} PRIVATE lab_options)

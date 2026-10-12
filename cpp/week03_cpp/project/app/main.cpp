@@ -9,10 +9,10 @@ void runCase()
     const double modulus = 1000.0;
     const double total_strain = 0.01;
 
-    lab::updateStress(state, modulus, total_strain);
+    lab::updateStress(state, modulus, total_strain);    // stress = 10
     std::cout << "first=" << state.stress << '\n';
     
-    lab::updateStress(state, modulus, total_strain);
+    lab::updateStress(state, modulus, total_strain);    // stress = 10
     std::cout << "second=" << state.stress << '\n';
 }
 

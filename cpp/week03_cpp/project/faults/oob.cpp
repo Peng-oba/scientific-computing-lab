@@ -2,8 +2,13 @@
 
 int main(int argc, char**)
 {
-    int* values = new int[3]{10, 20, 30};
-    const int index = argc + 2;  // With no extra arguments: index == 3.
-    std::cout << values[index] << '\n';  // Intentional: heap-buffer-overflow.
+    int *values = new int[3]{10, 20, 30};
+
+    // 若无额外参数: index == 3
+    const int index = argc + 2;
+
+    // 索引超出范围
+    std::cout << values[index] << '\n';
+
     delete[] values;
 }

@@ -1,12 +1,13 @@
 #pragma once
 
 namespace lab {
-struct MaterialState {
+struct MaterialState
+{
     double stress = 0.0;
 };
 
-// Strain is TOTAL strain, not an increment. E > 0; inputs must be finite.
-// Invalid input throws std::invalid_argument without changing state.
-// The teaching examples use values for which E * strain is representable.
+// strain 表示总应变, 而非应变增量.
+// 弹性模量 E (即 modulus) 必须大于 0; 输入参数必须为有限值.
+// 输入参数无效时, 抛出 std::invalid_argument 异常, 且不改变 state.
 void updateStress(MaterialState& state, double modulus, double strain);
-}  // namespace lab
+}  // 命名空间 lab

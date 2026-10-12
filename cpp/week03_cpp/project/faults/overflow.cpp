@@ -4,6 +4,9 @@
 int main()
 {
     volatile int maximum = std::numeric_limits<int>::max();
-    const int result = maximum + 1;  // Intentional: signed integer overflow (UB).
+
+    // 整数溢出
+    const int result = maximum + 1;
+    
     std::cout << result << '\n';
 }

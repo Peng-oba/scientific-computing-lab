@@ -21,6 +21,17 @@
 - D3 放宽容差的假通过与否决理由：
 - D4 可证伪假设、实际 debugger 观测和最小修复：
 - D5 UAF / OOB / UB 的真实报告及修复对照：
+  - 源码判断：
+    1. UAF：`faults/uaf.cpp:9` 的 `delete[] values` 使 `borrowed` 悬垂；第 12 行读取 `borrowed[0]` 才触发释放后使用。
+    2. OOB：`faults/oob.cpp:8` 中无额外参数时 `argc=1`，故 `index=3`；长度为 3 的数组仅允许索引 0、1、2，第 11 行读取越界。
+    3. UB：`faults/overflow.cpp:9` 先在有符号 `int` 中计算 `maximum + 1`，超出可表示范围，属于未定义行为。
+  - 已有原始报告（`build/sanitize-win/*.err.log`，按当前源码行号核对）：
+    - UAF：`uaf.err.log` 报 `heap-use-after-free`，读发生在 `faults/uaf.cpp:12`，释放在第 9 行，分配在第 5 行。
+    - OOB：`oob.err.log` 报 `heap-buffer-overflow`，读发生在 `faults/oob.cpp:11`，分配在第 5 行。
+    - UB：`overflow.err.log` 报 `signed integer overflow`，指出 `2147483647 + 1` 不能用 `int` 表示，位置为 `faults/overflow.cpp:9`。
+  - 三个故障程序的实际退出码：现有日志未记录，待分别运行并填写；不能由诊断文本推定具体数值。
+  - 最小修复前后对照：待选择至少一个故障，保留修复前日志和退出码，修改后只重建该目标，再记录新输出、诊断和退出码。
+  - 检查范围：三个故障目标不属于正常 CTest；正常测试无 sanitizer 报告也不能证明所有路径安全或数值算法正确。
 - D6 实际 OGS target→入口→函数→断言，以及运行或阻塞：
 - D7 新输入预测与运行：
 - 我能独立解释的内容：
