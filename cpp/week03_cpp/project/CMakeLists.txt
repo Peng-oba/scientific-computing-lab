@@ -20,19 +20,19 @@ elseif(LAB_ENABLE_SANITIZERS)
     message(FATAL_ERROR "This lab's sanitizer configuration needs GCC or Clang on Linux/WSL")
 endif()
 
-add_library(material src/material.cpp)
-target_include_directories(material PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+add_library(material src/material.cpp)  # 将 src/material.cpp 编进 material 库
+target_include_directories(material PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")   # 编译时能找到 include/lab/material.hpp
 target_link_libraries(material PUBLIC lab_options)
 
-add_executable(material_demo app/main.cpp)
-target_link_libraries(material_demo PRIVATE material)
+add_executable(material_demo app/main.cpp)  # 将 app/main.cpp 编进演示程序
+target_link_libraries(material_demo PRIVATE material)   # 演示程序链接 material 库
 
 include(CTest)
 # 配置 Test 测试
 if(BUILD_TESTING)
     add_executable(material_tests tests/material_tests.cpp)
     target_link_libraries(material_tests PRIVATE material)
-    foreach(case_name IN ITEMS normal boundary invalid repeated)    # 循环添加
+    foreach(case_name IN ITEMS normal boundary invalid repeated)    # 循环添加 Test
         add_test(NAME material.${case_name} COMMAND material_tests ${case_name})
     endforeach()
     if(LAB_WITH_GTEST)

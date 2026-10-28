@@ -35,6 +35,19 @@ ctest --test-dir build/gtests --output-on-failure --no-tests=error
 
 参考项目预期 8 个用例（普通4＋GoogleTest4）。项目不自动联网下载依赖；自定义前缀可通过 CMAKE_PREFIX_PATH 提供。环境未跑通时如实记为待补。
 
+Windows/MinGW 环境下，GoogleTest 必须与项目使用兼容的编译工具链。若链接命令出现 `Anaconda3/Library/lib/gtest.lib`，并报出大量 `undefined reference`，应检查是否误用了 MSVC 版本的库。
+
+如果已用当前 MinGW 将 GoogleTest 安装到 `build/googletest-install`，在本项目目录的 PowerShell 中执行以下命令，显式覆盖缓存中的 `GTest_DIR`：
+
+```powershell
+$gtestConfigDir = (Resolve-Path 'build/googletest-install/lib/cmake/GTest').Path
+cmake -S . -B build/gtests -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DLAB_WITH_GTEST=ON "-DGTest_DIR:PATH=$gtestConfigDir"
+cmake --build build/gtests --parallel 2
+ctest --test-dir build/gtests --output-on-failure --no-tests=error
+```
+
+每一步成功后再执行下一步。该示例要求构建目录使用当前 MinGW 和 Ninja；更换编译器时应使用新的构建目录。删除构建缓存或重新创建构建目录后，仍需显式指定兼容的 `GTest_DIR`；仅设置 `CMAKE_PREFIX_PATH` 不会覆盖已有的有效 `GTest_DIR` 缓存项。
+
 ## sanitizer
 
 ```bash

@@ -12,6 +12,6 @@ void updateStress(MaterialState& state, double modulus, double strain)
         throw std::invalid_argument("modulus must be finite and positive; strain must be finite");
     }
 
-    state.stress = modulus * strain;
+    state.stress += modulus * strain;
 }
 }  // namespace lab

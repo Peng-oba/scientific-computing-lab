@@ -5,12 +5,16 @@
 #include <stdexcept>
 #include <string>
 
-namespace {
+namespace
+{
+// 判断两个浮点数是否近似相等 (容差 1e-12)
 bool near(double actual, double expected)
 {
     return std::abs(actual - expected) <= 1e-12;
 }
 
+// 正常路径: 验证 stress = modulus * strain
+// 输入 1000.0 * 0.01, 期望 10.
 bool normal()
 {
     lab::MaterialState state;
@@ -18,6 +22,8 @@ bool normal()
     return near(state.stress, 10.0);
 }
 
+// 边界情况: strain = 0 时, stress 应为 0
+// 验证 1000.0 * 0.0 = 0.0
 bool boundary()
 {
     lab::MaterialState state{7.0};
@@ -25,6 +31,8 @@ bool boundary()
     return near(state.stress, 0.0);
 }
 
+// 非法输入: modulus = -1000.0 应抛 std::invalid_argument
+// 且 state.stress 保持原值 7.0（强异常安全）
 bool invalid()
 {
     lab::MaterialState state{7.0};
@@ -36,6 +44,8 @@ bool invalid()
     return false;
 }
 
+// 重复调用: 验证 updateStress 是 "覆盖" 而非 "累加"
+// 两次 updateStress(1000.0, 0.01) 后, stress 应为 10.0 (不是 20.0)
 bool repeated()
 {
     lab::MaterialState state;
